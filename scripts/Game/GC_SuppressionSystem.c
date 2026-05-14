@@ -1,7 +1,7 @@
 class GC_SuppressionSystem : GameSystem
 {
 	// General
-	[Attribute("1", UIWidgets.CheckBox, "When enabled, friendly fire does not cause suppression.", category: "Suppression")]
+	[Attribute("0", UIWidgets.CheckBox, "When enabled, friendly fire does not cause suppression.", category: "Suppression")]
 	protected bool m_bIgnoreFriendlySuppression;
 
 	[Attribute("5.0", UIWidgets.Auto,

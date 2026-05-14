@@ -68,9 +68,7 @@ class GC_SuppressionEffect : BaseProjectileEffect
 
 			if (playerFac && shooterFac)
 			{
-				Faction pf = playerFac.GetAffiliatedFaction();
-				Faction sf = shooterFac.GetAffiliatedFaction();
-				if (pf && sf && pf == sf)
+				if(playerFac.GetAffiliatedFaction() == shooterFac.GetAffiliatedFaction())
 					return;
 			}
 		}

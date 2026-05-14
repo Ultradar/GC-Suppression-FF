@@ -61,32 +61,26 @@ modded class SCR_MuzzleEffectComponent
 		if (vector.DistanceXZ(playerPos, passPoint) > 100) // 100 is kind of arbitrary but should be enough
 			return false;
 
-		// 4. faction check - don't suppress from friendly shooters
+		IEntity shooter = muzzle.GetOwner().GetRootParent();
+		if (!shooter)
+			shooter = muzzle.GetOwner();
+
+		if(!shooter || shooter == player)
+			return false;
+		
+		// 4. faction check - don't suppress from friendly shooters if enabled
 		GC_SuppressionSystem suppr = GC_SuppressionSystem.GetInstance();
 		if (suppr && suppr.GetIgnoreFriendlySuppression())
 		{
-			IEntity muzzleOwner = muzzle.GetOwner();
-			if (muzzleOwner)
+			FactionAffiliationComponent playerFac = FactionAffiliationComponent.Cast(
+			player.FindComponent(FactionAffiliationComponent));
+			FactionAffiliationComponent shooterFac = FactionAffiliationComponent.Cast(
+			shooter.FindComponent(FactionAffiliationComponent));
+			
+			if (playerFac && shooterFac)
 			{
-				IEntity shooter = muzzleOwner.GetParent();
-				if (!shooter)
-					shooter = muzzleOwner;
-
-				if (shooter != player)
-				{
-					FactionAffiliationComponent playerFac = FactionAffiliationComponent.Cast(
-						player.FindComponent(FactionAffiliationComponent));
-					FactionAffiliationComponent shooterFac = FactionAffiliationComponent.Cast(
-						shooter.FindComponent(FactionAffiliationComponent));
-
-					if (playerFac && shooterFac)
-					{
-						Faction pf = playerFac.GetAffiliatedFaction();
-						Faction sf = shooterFac.GetAffiliatedFaction();
-						if (pf && sf && pf == sf)
-							return false;
-					}
-				}
+				if(playerFac.GetAffiliatedFaction() == shooterFac.GetAffiliatedFaction())
+					return false;
 			}
 		}
 
